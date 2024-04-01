@@ -10,7 +10,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-from os import environ
 from typing import Optional
 
 from testcontainers.core.generic import DbContainer
@@ -58,21 +57,16 @@ class MySqlContainer(DbContainer):
 
         self.port = port
         self.with_exposed_ports(self.port)
-        self.username = username or environ.get("MYSQL_USER", "test")
-        self.root_password = root_password or environ.get("MYSQL_ROOT_PASSWORD", "test")
-        self.password = password or environ.get("MYSQL_PASSWORD", "test")
-        self.dbname = dbname or environ.get("MYSQL_DATABASE", "test")
+        self.username = username or "test"
+        self.root_password = root_password or "test"
+        self.password = password or "test"
+        self.dbname = dbname or "test"
 
         if self.username == "root":
             self.root_password = self.password
 
     def _configure(self) -> None:
-        self.with_env("MYSQL_ROOT_PASSWORD", self.root_password)
-        self.with_env("MYSQL_DATABASE", self.dbname)
-
-        if self.username != "root":
-            self.with_env("MYSQL_USER", self.username)
-            self.with_env("MYSQL_PASSWORD", self.password)
+        pass
 
     def get_connection_url(self) -> str:
         return super()._create_connection_url(
